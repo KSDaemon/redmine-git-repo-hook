@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Change this to meet your need
+url="http://redmine-hooks.dev.rus/"
+
+read -t 60 b a r
+n="$(basename $(pwd) .git)"
+
+data="{\"before\" : \"$b\", \"after\" : \"$a\", \"ref\" : \"$r\", \"repository\" : { \"name\" : \"$n\"}}"
+#echo -n "{\"before\" : \"${before}\"," > /tmp/post-receive.log
+#echo -n "\"after\" : \"${after}\"," >> /tmp/post-receive.log
+#echo -n "\"ref\" : \"${ref}\"," >> /tmp/post-receive.log
+#echo -n "\"repository\" : {" >> /tmp/post-receive.log
+#echo "\"name\" :\"${name}\"}}" >> /tmp/post-receive.log
+
+exec curl -s -X POST -d "${data}" "${url}"
