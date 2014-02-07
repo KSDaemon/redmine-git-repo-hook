@@ -31,16 +31,19 @@
 
 			array_unshift($ini_array['commands']['cmds'], $cmd);
 
-			$res_cmd = "/bin/sh -c 'exec 2>&1 && " . implode(" && ", $ini_array['commands']['cmds']) . "'";
-			$output = array();
-
-			exec($res_cmd, $output, $res);
-
 			if($ini_array['base']['log_script']) {
+				$res_cmd = "/bin/sh -c 'exec 2>&1 && " . implode(" && ", $ini_array['commands']['cmds']) . "'";
+				$output = array();
+
+				exec($res_cmd, $output, $res);
+
 				fwrite($logfile, date('Y-m-d H:i:s') . " CMD: " . $res_cmd . "\n");
 				fwrite($logfile, date('Y-m-d H:i:s') . " OUTPUT: " . implode("\n", $output) . "\n");
-			}
+			} else {
+				$res_cmd = "/bin/sh -c 'setsid /bin/sh -c \"" . implode(" && ", $ini_array['commands']['cmds']) . "\" < /dev/null 2>/dev/null >/dev/null &'";
 
+				exec($res_cmd);
+			}
 		}
 		else {
 			throw new Exception("Cannot json_decode the HTTP_RAW_POST_DATA");
